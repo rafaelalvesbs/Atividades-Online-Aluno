@@ -64,18 +64,34 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // EXTRAÇÃO DA SESSÃO PELA URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessaoId = urlParams.get('id');
+
+        // BLOQUEIO CASO NÃO SEJA LIDO VIA QR CODE
+        if (!sessaoId) {
+            document.getElementById('loginSection').innerHTML = `
+                <div style="text-align: center; color: #ef4444;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; margin-bottom: 15px;"></i>
+                    <h2 style="margin: 0; color: #003058; text-transform: uppercase; font-weight: 800;">Acesso Negado</h2>
+                    <p style="font-weight: 600; font-size: 14px; color: #64748b; margin-top: 10px;">Escaneie o QR Code projetado pelo seu professor para entrar na atividade correta.</p>
+                </div>
+            `;
+            throw new Error("Sessão não informada. Parando execução.");
+        }
+
         let studentDocId = "";
         const nameInput = document.getElementById('studentName');
         const loginSection = document.getElementById('loginSection');
         const activitySection = document.getElementById('activitySection');
         const questionsContainer = document.getElementById('questionsContainer');
 
-        // Tratamento do nome
+        // Tratamento do nome (apenas letras, maiúsculo)
         nameInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
         });
 
-        // 10 Questões de Gramática (Exemplos)
+        // 10 Questões de Gramática (Exemplos prontos para alteração)
         const grammarQuestions = [
             { q: "She ___ to the park every weekend.", opts: { A: "go", B: "goes", C: "going" } },
             { q: "I have ___ reading this book for two hours.", opts: { A: "been", B: "being", C: "be" } },
@@ -106,8 +122,10 @@
             if (name.length < 2) return alert("Please enter a valid name.");
 
             try {
+                // REGISTRA O ALUNO NA SESSÃO ESPECÍFICA
                 const docRef = await addDoc(collection(db, "grammar_activity"), {
                     name: name,
+                    sessaoId: sessaoId, // Vínculo com a sala do professor
                     status: "fazendo",
                     score: 0,
                     timestamp: new Date()
@@ -124,7 +142,7 @@
 
         document.getElementById('btnSubmit').addEventListener('click', async () => {
             let score = 0;
-            // Gabarito Fictício para o exemplo (ajuste conforme necessário)
+            // Gabarito
             const correctAnswers = ['B', 'A', 'B', 'B', 'A', 'C', 'B', 'B', 'A', 'C'];
             
             for (let i = 1; i <= 10; i++) {
