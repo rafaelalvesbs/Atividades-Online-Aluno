@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grammar Activity</title>
-    <!-- FontAwesome para os ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background-color: #f1f5f9; color: #1e293b; }
@@ -30,6 +29,7 @@
 </head>
 <body>
 
+    <!-- TELA DE LOGIN -->
     <div id="loginSection" class="card-box">
         <h2 class="header-title"><i class="fa-solid fa-id-card"></i> Student Login</h2>
         <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 15px;">Enter your full name to start the grammar activity:</p>
@@ -37,20 +37,23 @@
         <button id="btnEnter" class="btn-premium">START ACTIVITY</button>
     </div>
 
+    <!-- TELA DA ATIVIDADE -->
     <div id="activitySection" class="hidden">
         <div class="card-box" style="margin-bottom: 20px; border-top: 5px solid #003058;">
             <h2 class="header-title" style="margin-bottom: 5px;"><i class="fa-solid fa-pen-nib"></i> Grammar Practice</h2>
             <p style="color: #64748b; font-size: 13px; font-weight: 600; margin: 0;">Read carefully and choose the correct option.</p>
         </div>
 
-        <div id="questionsContainer"></div>
+        <div id="questionsContainer">
+            <!-- As questões virão do banco de dados -->
+        </div>
         
         <button id="btnSubmit" class="btn-premium btn-success" style="margin-bottom: 40px;"><i class="fa-solid fa-paper-plane"></i> SUBMIT ANSWERS</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDoPCn9UisXYRJFKwxfPoe-5nIhPqOVXt0",
@@ -68,96 +71,110 @@
         const urlParams = new URLSearchParams(window.location.search);
         const sessaoId = urlParams.get('id');
 
-        // BLOQUEIO CASO NÃO SEJA LIDO VIA QR CODE
         if (!sessaoId) {
             document.getElementById('loginSection').innerHTML = `
                 <div style="text-align: center; color: #ef4444;">
                     <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; margin-bottom: 15px;"></i>
                     <h2 style="margin: 0; color: #003058; text-transform: uppercase; font-weight: 800;">Acesso Negado</h2>
-                    <p style="font-weight: 600; font-size: 14px; color: #64748b; margin-top: 10px;">Escaneie o QR Code projetado pelo seu professor para entrar na atividade correta.</p>
+                    <p style="font-weight: 600; font-size: 14px; color: #64748b; margin-top: 10px;">Escaneie o QR Code projetado pelo seu professor para entrar na atividade.</p>
                 </div>
             `;
             throw new Error("Sessão não informada. Parando execução.");
         }
 
         let studentDocId = "";
+        let gabaritoCorreto = []; // Guardará o gabarito baixado do banco
+        
         const nameInput = document.getElementById('studentName');
         const loginSection = document.getElementById('loginSection');
         const activitySection = document.getElementById('activitySection');
         const questionsContainer = document.getElementById('questionsContainer');
 
-        // Tratamento do nome (apenas letras, maiúsculo)
+        // Tratamento do nome
         nameInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
         });
 
-        // 10 Questões de Gramática (Exemplos prontos para alteração)
-        const grammarQuestions = [
-            { q: "She ___ to the park every weekend.", opts: { A: "go", B: "goes", C: "going" } },
-            { q: "I have ___ reading this book for two hours.", opts: { A: "been", B: "being", C: "be" } },
-            { q: "If it rains tomorrow, we ___ stay at home.", opts: { A: "would", B: "will", C: "did" } },
-            { q: "He is the man ___ stole my car.", opts: { A: "which", B: "who", C: "whom" } },
-            { q: "By next year, they ___ finished the project.", opts: { A: "will have", B: "would have", C: "have" } },
-            { q: "I enjoy ___ movies on Friday nights.", opts: { A: "watch", B: "to watch", C: "watching" } },
-            { q: "They ___ left the party early yesterday.", opts: { A: "have", B: "had", C: "having" } },
-            { q: "Neither John ___ Mary passed the exam.", opts: { A: "or", B: "nor", C: "and" } },
-            { q: "She asked me where ___.", opts: { A: "I lived", B: "did I live", C: "do I live" } },
-            { q: "The book was written ___ a famous author.", opts: { A: "for", B: "with", C: "by" } }
-        ];
-
-        grammarQuestions.forEach((item, index) => {
-            const i = index + 1;
-            questionsContainer.innerHTML += `
-                <div class="question-card">
-                    <div class="question-enunc">Q${i}. ${item.q}</div>
-                    <label class="option-label"><input type="radio" name="q${i}" value="A"> A) ${item.opts.A}</label>
-                    <label class="option-label"><input type="radio" name="q${i}" value="B"> B) ${item.opts.B}</label>
-                    <label class="option-label"><input type="radio" name="q${i}" value="C"> C) ${item.opts.C}</label>
-                </div>
-            `;
-        });
-
+        // AÇÃO: ENTRAR E BAIXAR AS QUESTÕES
         document.getElementById('btnEnter').addEventListener('click', async () => {
             const name = nameInput.value.trim();
-            if (name.length < 2) return alert("Please enter a valid name.");
+            if (name.length < 2) return alert("Por favor, insira um nome válido.");
+            
+            const btn = document.getElementById('btnEnter');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CARREGANDO QUESTÕES...';
+            btn.style.pointerEvents = 'none';
 
             try {
-                // REGISTRA O ALUNO NA SESSÃO ESPECÍFICA
+                // 1. Baixa os dados da sessão (incluindo as questões salvas pelo professor)
+                const sessaoRef = doc(db, "sessoes_ativas", sessaoId);
+                const sessaoSnap = await getDoc(sessaoRef);
+
+                if (!sessaoSnap.exists()) {
+                    alert("Esta atividade não existe ou foi encerrada.");
+                    return;
+                }
+
+                const dadosSessao = sessaoSnap.data();
+                const questoes = dadosSessao.questoes || [];
+
+                // 2. Renderiza as questões na tela do aluno e salva o gabarito na memória
+                questoesContainer.innerHTML = "";
+                questoes.forEach((item, index) => {
+                    gabaritoCorreto.push(item.answer);
+                    
+                    const i = index + 1;
+                    questoesContainer.innerHTML += `
+                        <div class="question-card">
+                            <div class="question-enunc">Q${i}. ${item.q}</div>
+                            <label class="option-label"><input type="radio" name="q${i}" value="A"> A) ${item.opts.A}</label>
+                            <label class="option-label"><input type="radio" name="q${i}" value="B"> B) ${item.opts.B}</label>
+                            <label class="option-label"><input type="radio" name="q${i}" value="C"> C) ${item.opts.C}</label>
+                        </div>
+                    `;
+                });
+
+                // 3. Registra o aluno no banco
                 const docRef = await addDoc(collection(db, "grammar_activity"), {
                     name: name,
-                    sessaoId: sessaoId, // Vínculo com a sala do professor
+                    sessaoId: sessaoId,
                     status: "fazendo",
                     score: 0,
                     timestamp: new Date()
                 });
                 studentDocId = docRef.id;
                 
+                // 4. Troca de tela
                 loginSection.classList.add('hidden');
                 activitySection.classList.remove('hidden');
+
             } catch (e) {
                 console.error("Erro: ", e);
-                alert("Connection error.");
+                alert("Erro de conexão ao carregar a atividade.");
+                btn.innerHTML = 'START ACTIVITY';
+                btn.style.pointerEvents = 'auto';
             }
         });
 
+        // AÇÃO: ENTREGAR AS RESPOSTAS
         document.getElementById('btnSubmit').addEventListener('click', async () => {
             let score = 0;
-            // Gabarito
-            const correctAnswers = ['B', 'A', 'B', 'B', 'A', 'C', 'B', 'B', 'A', 'C'];
             
-            for (let i = 1; i <= 10; i++) {
+            // Compara o que o aluno marcou com o gabarito que veio do banco
+            for (let i = 1; i <= gabaritoCorreto.length; i++) {
                 const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                if (selected && selected.value === correctAnswers[i-1]) { 
+                if (selected && selected.value === gabaritoCorreto[i-1]) { 
                     score += 1; 
                 }
             }
 
             try {
+                // Atualiza o perfil do aluno no banco com "entregue" e a nota final
                 const studentRef = doc(db, "grammar_activity", studentDocId);
                 await updateDoc(studentRef, {
                     status: "entregue",
                     score: score
                 });
+                
                 activitySection.innerHTML = `
                     <div class='card-box' style='text-align: center; border-top: 5px solid #10b981;'>
                         <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #10b981; margin-bottom: 15px;"></i>
