@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Activity</title>
+    <!-- FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background-color: #f1f5f9; color: #1e293b; }
+        .hidden { display: none !important; }
+        .card-box { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .header-title { color: #003058; font-weight: 800; font-size: 22px; margin-top: 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: -0.5px; }
+        
+        .input-premium { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; background: #f8fafc; margin-bottom: 20px; font-family: inherit; font-weight: 600; color: #003058; box-sizing: border-box; text-transform: uppercase; outline: none; transition: 0.3s; }
+        .input-premium:focus { border-color: #003058; background: #fff; }
+        
+        .btn-premium { width: 100%; padding: 16px; background-color: #003058; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
+        .btn-premium:hover { background-color: #002244; transform: translateY(-2px); }
+        .btn-success { background-color: #10b981; }
+        .btn-success:hover { background-color: #059669; }
+
+        .question-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-left: 4px solid #003058; }
+        .question-enunc { font-weight: 700; color: #1e293b; font-size: 15px; margin-bottom: 15px; }
+        
+        .option-label { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; font-size: 14px; border: 1px solid #f1f5f9; background: #f8fafc; cursor: pointer; transition: 0.2s; font-weight: 600; color: #475569; margin-bottom: 8px; }
+        .option-label:hover { background: #e0f2fe; border-color: #bae6fd; }
+        input[type="radio"] { transform: scale(1.2); accent-color: #003058; }
+    </style>
+</head>
+<body>
+
+    <div id="loginSection" class="card-box">
+        <h2 class="header-title"><i class="fa-solid fa-id-card"></i> Student Login</h2>
+        <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 15px;">Enter your full name to start the grammar activity:</p>
+        <input type="text" id="studentName" class="input-premium" autocomplete="off" placeholder="YOUR NAME HERE">
+        <button id="btnEnter" class="btn-premium">START ACTIVITY</button>
+    </div>
+
+    <div id="activitySection" class="hidden">
+        <div class="card-box" style="margin-bottom: 20px; border-top: 5px solid #003058;">
+            <h2 class="header-title" style="margin-bottom: 5px;"><i class="fa-solid fa-pen-nib"></i> Grammar Practice</h2>
+            <p style="color: #64748b; font-size: 13px; font-weight: 600; margin: 0;">Read carefully and choose the correct option.</p>
+        </div>
+
+        <div id="questionsContainer"></div>
+        
+        <button id="btnSubmit" class="btn-premium btn-success" style="margin-bottom: 40px;"><i class="fa-solid fa-paper-plane"></i> SUBMIT ANSWERS</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoPCn9UisXYRJFKwxfPoe-5nIhPqOVXt0",
+            authDomain: "atividadesonline-2621d.firebaseapp.com",
+            projectId: "atividadesonline-2621d",
+            storageBucket: "atividadesonline-2621d.firebasestorage.app",
+            messagingSenderId: "935315229080",
+            appId: "1:935315229080:web:a55e2a949a9096fb55c3ed"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let studentDocId = "";
+        const nameInput = document.getElementById('studentName');
+        const loginSection = document.getElementById('loginSection');
+        const activitySection = document.getElementById('activitySection');
+        const questionsContainer = document.getElementById('questionsContainer');
+
+        // Tratamento do nome
+        nameInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
+        });
+
+        // 10 Questões de Gramática (Exemplos)
+        const grammarQuestions = [
+            { q: "She ___ to the park every weekend.", opts: { A: "go", B: "goes", C: "going" } },
+            { q: "I have ___ reading this book for two hours.", opts: { A: "been", B: "being", C: "be" } },
+            { q: "If it rains tomorrow, we ___ stay at home.", opts: { A: "would", B: "will", C: "did" } },
+            { q: "He is the man ___ stole my car.", opts: { A: "which", B: "who", C: "whom" } },
+            { q: "By next year, they ___ finished the project.", opts: { A: "will have", B: "would have", C: "have" } },
+            { q: "I enjoy ___ movies on Friday nights.", opts: { A: "watch", B: "to watch", C: "watching" } },
+            { q: "They ___ left the party early yesterday.", opts: { A: "have", B: "had", C: "having" } },
+            { q: "Neither John ___ Mary passed the exam.", opts: { A: "or", B: "nor", C: "and" } },
+            { q: "She asked me where ___.", opts: { A: "I lived", B: "did I live", C: "do I live" } },
+            { q: "The book was written ___ a famous author.", opts: { A: "for", B: "with", C: "by" } }
+        ];
+
+        grammarQuestions.forEach((item, index) => {
+            const i = index + 1;
+            questionsContainer.innerHTML += `
+                <div class="question-card">
+                    <div class="question-enunc">Q${i}. ${item.q}</div>
+                    <label class="option-label"><input type="radio" name="q${i}" value="A"> A) ${item.opts.A}</label>
+                    <label class="option-label"><input type="radio" name="q${i}" value="B"> B) ${item.opts.B}</label>
+                    <label class="option-label"><input type="radio" name="q${i}" value="C"> C) ${item.opts.C}</label>
+                </div>
+            `;
+        });
+
+        document.getElementById('btnEnter').addEventListener('click', async () => {
+            const name = nameInput.value.trim();
+            if (name.length < 2) return alert("Please enter a valid name.");
+
+            try {
+                const docRef = await addDoc(collection(db, "grammar_activity"), {
+                    name: name,
+                    status: "fazendo",
+                    score: 0,
+                    timestamp: new Date()
+                });
+                studentDocId = docRef.id;
+                
+                loginSection.classList.add('hidden');
+                activitySection.classList.remove('hidden');
+            } catch (e) {
+                console.error("Erro: ", e);
+                alert("Connection error.");
+            }
+        });
+
+        document.getElementById('btnSubmit').addEventListener('click', async () => {
+            let score = 0;
+            // Gabarito Fictício para o exemplo (ajuste conforme necessário)
+            const correctAnswers = ['B', 'A', 'B', 'B', 'A', 'C', 'B', 'B', 'A', 'C'];
+            
+            for (let i = 1; i <= 10; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && selected.value === correctAnswers[i-1]) { 
+                    score += 1; 
+                }
+            }
+
+            try {
+                const studentRef = doc(db, "grammar_activity", studentDocId);
+                await updateDoc(studentRef, {
+                    status: "entregue",
+                    score: score
+                });
+                activitySection.innerHTML = `
+                    <div class='card-box' style='text-align: center; border-top: 5px solid #10b981;'>
+                        <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #10b981; margin-bottom: 15px;"></i>
+                        <h2 class="header-title" style="justify-content: center;">Submitted!</h2>
+                        <p style="color: #64748b; font-weight: 600;">Check the main screen for your results.</p>
+                    </div>`;
+            } catch (e) {
+                console.error("Erro: ", e);
+                alert("Error submitting answers.");
+            }
+        });
+    </script>
+</body>
+</html>
