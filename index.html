@@ -3,53 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grammar Activity</title>
+    <title>Live Grammar Session</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background-color: #f1f5f9; color: #1e293b; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; background-color: #f8fafc; color: #0f172a; height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
-        .card-box { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .header-title { color: #003058; font-weight: 800; font-size: 22px; margin-top: 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: -0.5px; }
         
-        .input-premium { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; background: #f8fafc; margin-bottom: 20px; font-family: inherit; font-weight: 600; color: #003058; box-sizing: border-box; text-transform: uppercase; outline: none; transition: 0.3s; }
-        .input-premium:focus { border-color: #003058; background: #fff; }
+        /* LOGIN SCREEN */
+        .login-wrapper { padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .card-box { background: white; padding: 35px 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; width: 100%; max-width: 400px; text-align: center; }
+        .header-title { color: #0f172a; font-weight: 800; font-size: 24px; margin: 0 0 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; letter-spacing: -0.5px; }
         
-        .btn-premium { width: 100%; padding: 16px; background-color: #003058; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
-        .btn-premium:hover { background-color: #002244; transform: translateY(-2px); }
-        .btn-success { background-color: #10b981; }
-        .btn-success:hover { background-color: #059669; }
+        .input-modern { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; background: #fff; margin-bottom: 25px; font-family: inherit; font-weight: 800; color: #0f172a; box-sizing: border-box; text-transform: uppercase; outline: none; transition: all 0.3s; text-align: center; }
+        .input-modern:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+        
+        .btn-gradient { width: 100%; padding: 18px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; }
+        .btn-gradient:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); }
 
-        .question-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-left: 4px solid #003058; }
-        .question-enunc { font-weight: 700; color: #1e293b; font-size: 15px; margin-bottom: 15px; }
+        /* ACTIVITY SCREEN (MOBILE APP STYLE) */
+        #view-resolver { display: none; flex-direction: column; height: 100vh; background: #f8fafc; }
         
-        .option-label { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; font-size: 14px; border: 1px solid #f1f5f9; background: #f8fafc; cursor: pointer; transition: 0.2s; font-weight: 600; color: #475569; margin-bottom: 8px; }
-        .option-label:hover { background: #e0f2fe; border-color: #bae6fd; }
-        input[type="radio"] { transform: scale(1.2); accent-color: #003058; }
+        .header-resolver-top { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); padding: 20px 20px 30px 20px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; color: #fff; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15); }
+        .header-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header-resolver-titulo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Pills Navigation */
+        .nav-questoes-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: -20px; padding: 0 20px; position: relative; z-index: 10; }
+        .g-btn-pill { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #fff; background: #fff; font-weight: 800; cursor: pointer; color: #64748b; font-size: 14px; transition: 0.3s; display: flex; justify-content: center; align-items: center; padding: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .g-btn-pill.active { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transform: scale(1.1); }
+        .g-btn-pill.respondida:not(.active) { background: #e0e7ff; color: #4f46e5; border-color: #e0e7ff; }
+
+        /* Question Render Area */
+        #render-pergunta { flex-grow: 1; overflow-y: auto; padding: 30px 20px 20px 20px; display: flex; flex-direction: column; }
+        
+        .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; }
+        .box-enunciado-render::before { content: ''; position: absolute; left: 20px; top: -10px; font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f10d"; color: #8b5cf6; font-size: 24px; background: #fff; padding: 0 5px; opacity: 0.2; }
+        .texto-enunciado-render { color: #0f172a; font-size: 18px; font-weight: 800; line-height: 1.5; text-align: center; }
+
+        /* Options */
+        .opcoes-lista { display: flex; flex-direction: column; gap: 12px; }
+        .opcao-card { display: flex; align-items: center; padding: 16px 20px; background: #fff; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+        .opcao-card input { display: none; }
+        
+        .letra-indicador { font-weight: 800; background: #f1f5f9; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 13px; color: #64748b; border: 1px solid #e2e8f0; flex-shrink: 0; transition: 0.3s; }
+        .texto-opcao { font-weight: 700; color: #1e293b; font-size: 15px; }
+
+        .opcao-card:has(input:checked) { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15); transform: translateY(-2px); }
+        .opcao-card:has(input:checked) .letra-indicador { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: transparent; }
+        .opcao-card:has(input:checked) .texto-opcao { color: #6d28d9; }
+
+        /* Bottom Navigation */
+        .container-navegacao-setas { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px 25px 20px; background: #f8fafc; }
+        .btn-seta-nav { background: #fff; border: 2px solid #e2e8f0; width: 55px; height: 55px; border-radius: 50%; color: #8b5cf6; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.2s; }
+        .btn-seta-nav:hover:not(:disabled) { background: #f5f3ff; border-color: #d8b4fe; transform: scale(1.05); }
+        .btn-seta-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Success Screen */
+        .success-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; padding: 20px; }
+        .success-icon-wrap { width: 100px; height: 100px; background: #f5f3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2); }
+        .success-icon-wrap i { font-size: 50px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body>
 
     <!-- TELA DE LOGIN -->
-    <div id="loginSection" class="card-box">
-        <h2 class="header-title"><i class="fa-solid fa-id-card"></i> Student Login</h2>
-        <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 15px;">Enter your full name to start the grammar activity:</p>
-        <input type="text" id="studentName" class="input-premium" autocomplete="off" placeholder="YOUR NAME HERE">
-        <button id="btnEnter" class="btn-premium">START ACTIVITY</button>
+    <div id="loginSection" class="login-wrapper">
+        <div class="card-box" style="border-top: 6px solid #8b5cf6;">
+            <div style="width: 80px; height: 80px; background: #f5f3ff; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fa-solid fa-user-astronaut" style="font-size: 35px; color: #8b5cf6;"></i>
+            </div>
+            <h2 class="header-title">Identificação</h2>
+            <p style="color: #64748b; font-size: 15px; font-weight: 600; margin-bottom: 30px; line-height: 1.5;">Digite seu nome completo para iniciar a atividade ao vivo</p>
+            <input type="text" id="studentName" class="input-modern" autocomplete="off" placeholder="SEU NOME AQUI">
+            <button id="btnEnter" class="btn-gradient">ENTRAR NA SALA <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
     </div>
 
-    <!-- TELA DA ATIVIDADE -->
-    <div id="activitySection" class="hidden">
-        <div class="card-box" style="margin-bottom: 20px; border-top: 5px solid #003058;">
-            <h2 class="header-title" style="margin-bottom: 5px;"><i class="fa-solid fa-pen-nib"></i> Grammar Practice</h2>
-            <p style="color: #64748b; font-size: 13px; font-weight: 600; margin: 0;">Read carefully and choose the correct option.</p>
+    <!-- TELA DA ATIVIDADE (Estilo App) -->
+    <div id="view-resolver">
+        <!-- Cabeçalho Roxo/Azul -->
+        <div class="header-resolver-top">
+            <div class="header-info">
+                <div class="header-resolver-titulo" id="atividadeTitulo">Carregando...</div>
+                <div style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800;">LIVE <i class="fa-solid fa-circle" style="font-size: 8px; color: #f87171; margin-left: 5px; animation: pulse 1.5s infinite;"></i></div>
+            </div>
         </div>
 
-        <div id="questionsContainer">
-            <!-- As questões virão do banco de dados -->
+        <!-- Pílulas de Navegação -->
+        <div class="nav-questoes-container" id="nav-questoes">
+            <!-- Pílulas numéricas geradas via JS -->
         </div>
-        
-        <button id="btnSubmit" class="btn-premium btn-success" style="margin-bottom: 40px;"><i class="fa-solid fa-paper-plane"></i> SUBMIT ANSWERS</button>
+
+        <!-- Área Central (Questão e Alternativas) -->
+        <div id="render-pergunta">
+            <!-- Container dos slides -->
+            <div id="questionsContainer" style="width: 100%;"></div>
+        </div>
+
+        <!-- Setas de Navegação Inferior -->
+        <div class="container-navegacao-setas">
+            <button id="btnPrev" class="btn-seta-nav"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="btnSubmit" class="btn-gradient hidden" style="flex: 1; margin: 0 15px; border-radius: 30px; height: 55px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);">
+                ENTREGAR <i class="fa-solid fa-paper-plane"></i>
+            </button>
+            <button id="btnNext" class="btn-seta-nav"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
     </div>
+
+    <!-- TELA DE SUCESSO -->
+    <div id="successSection" class="success-screen hidden">
+        <div class="success-icon-wrap">
+            <i class="fa-solid fa-trophy"></i>
+        </div>
+        <h2 style="color: #0f172a; font-weight: 800; font-size: 28px; margin: 0 0 10px 0;">Concluído!</h2>
+        <p style="color: #64748b; font-weight: 600; font-size: 16px; margin-bottom: 30px;">Respostas enviadas. Olhe para o telão para conferir a sua pontuação no ranking.</p>
+    </div>
+
+    <style>
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    </style>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -67,73 +141,89 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // EXTRAÇÃO DA SESSÃO PELA URL
+        // LÓGICA DE SESSÃO PELA URL
         const urlParams = new URLSearchParams(window.location.search);
         const sessaoId = urlParams.get('id');
 
         if (!sessaoId) {
             document.getElementById('loginSection').innerHTML = `
-                <div style="text-align: center; color: #ef4444;">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; margin-bottom: 15px;"></i>
-                    <h2 style="margin: 0; color: #003058; text-transform: uppercase; font-weight: 800;">Acesso Negado</h2>
-                    <p style="font-weight: 600; font-size: 14px; color: #64748b; margin-top: 10px;">Escaneie o QR Code projetado pelo seu professor para entrar na atividade.</p>
+                <div class="card-box" style="border-top: 6px solid #ef4444; margin: auto;">
+                    <div style="width: 80px; height: 80px; background: #fef2f2; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <i class="fa-solid fa-lock" style="font-size: 35px; color: #ef4444;"></i>
+                    </div>
+                    <h2 class="header-title">Acesso Negado</h2>
+                    <p style="font-weight: 600; font-size: 15px; color: #64748b; line-height: 1.5;">Você precisa escanear o QR Code no telão do professor para entrar na sala.</p>
                 </div>
             `;
-            throw new Error("Sessão não informada. Parando execução.");
+            throw new Error("Sessão não informada na URL.");
         }
 
         let studentDocId = "";
-        let gabaritoCorreto = []; // Guardará o gabarito baixado do banco
+        let questoesSessao = [];
+        let gabaritoCorreto = [];
+        let currentIndex = 0;
         
         const nameInput = document.getElementById('studentName');
         const loginSection = document.getElementById('loginSection');
-        const activitySection = document.getElementById('activitySection');
+        const activitySection = document.getElementById('view-resolver');
         const questionsContainer = document.getElementById('questionsContainer');
+        const navQuestoes = document.getElementById('nav-questoes');
+        
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const btnSubmit = document.getElementById('btnSubmit');
 
-        // Tratamento do nome
         nameInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
         });
 
-        // AÇÃO: ENTRAR E BAIXAR AS QUESTÕES
+        // 1. ENTRAR NA SESSÃO
         document.getElementById('btnEnter').addEventListener('click', async () => {
             const name = nameInput.value.trim();
-            if (name.length < 2) return alert("Por favor, insira um nome válido.");
+            if (name.length < 2) return alert("Por favor, digite um nome válido.");
             
             const btn = document.getElementById('btnEnter');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CARREGANDO QUESTÕES...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CARREGANDO...';
             btn.style.pointerEvents = 'none';
 
             try {
-                // 1. Baixa os dados da sessão (incluindo as questões salvas pelo professor)
                 const sessaoRef = doc(db, "sessoes_ativas", sessaoId);
                 const sessaoSnap = await getDoc(sessaoRef);
 
                 if (!sessaoSnap.exists()) {
-                    alert("Esta atividade não existe ou foi encerrada.");
+                    alert("A atividade não existe ou foi encerrada pelo professor.");
                     return;
                 }
 
                 const dadosSessao = sessaoSnap.data();
-                const questoes = dadosSessao.questoes || [];
+                document.getElementById('atividadeTitulo').innerText = dadosSessao.titulo || "Sessão Ao Vivo";
+                questoesSessao = dadosSessao.questoes || [];
+                
+                questionsContainer.innerHTML = "";
+                navQuestoes.innerHTML = "";
 
-                // 2. Renderiza as questões na tela do aluno e salva o gabarito na memória
-                questoesContainer.innerHTML = "";
-                questoes.forEach((item, index) => {
+                questoesSessao.forEach((item, index) => {
                     gabaritoCorreto.push(item.answer);
-                    
                     const i = index + 1;
-                    questoesContainer.innerHTML += `
-                        <div class="question-card">
-                            <div class="question-enunc">Q${i}. ${item.q}</div>
-                            <label class="option-label"><input type="radio" name="q${i}" value="A"> A) ${item.opts.A}</label>
-                            <label class="option-label"><input type="radio" name="q${i}" value="B"> B) ${item.opts.B}</label>
-                            <label class="option-label"><input type="radio" name="q${i}" value="C"> C) ${item.opts.C}</label>
+                    
+                    // Renderiza as Pílulas
+                    navQuestoes.innerHTML += `<button class="g-btn-pill" id="pill-${index}" onclick="window.irParaQuestao(${index})">${i}</button>`;
+
+                    // Renderiza as Questões Ocultas
+                    questionsContainer.innerHTML += `
+                        <div class="question-slide hidden" id="slide-${index}">
+                            <div class="box-enunciado-render">
+                                <div class="texto-enunciado-render">${item.q}</div>
+                            </div>
+                            <div class="opcoes-lista">
+                                <label class="opcao-card"><input type="radio" name="q${i}" value="A" onchange="window.marcarPill(${index})"><div class="letra-indicador">A</div><div class="texto-opcao">${item.opts.A}</div></label>
+                                <label class="opcao-card"><input type="radio" name="q${i}" value="B" onchange="window.marcarPill(${index})"><div class="letra-indicador">B</div><div class="texto-opcao">${item.opts.B}</div></label>
+                                <label class="opcao-card"><input type="radio" name="q${i}" value="C" onchange="window.marcarPill(${index})"><div class="letra-indicador">C</div><div class="texto-opcao">${item.opts.C}</div></label>
+                            </div>
                         </div>
                     `;
                 });
 
-                // 3. Registra o aluno no banco
                 const docRef = await addDoc(collection(db, "grammar_activity"), {
                     name: name,
                     sessaoId: sessaoId,
@@ -143,23 +233,67 @@
                 });
                 studentDocId = docRef.id;
                 
-                // 4. Troca de tela
                 loginSection.classList.add('hidden');
-                activitySection.classList.remove('hidden');
+                activitySection.style.display = 'flex';
+                
+                window.irParaQuestao(0);
 
             } catch (e) {
                 console.error("Erro: ", e);
-                alert("Erro de conexão ao carregar a atividade.");
-                btn.innerHTML = 'START ACTIVITY';
+                alert("Erro de conexão ao baixar a atividade.");
+                btn.innerHTML = 'ENTRAR NA SALA <i class="fa-solid fa-arrow-right"></i>';
                 btn.style.pointerEvents = 'auto';
             }
         });
 
-        // AÇÃO: ENTREGAR AS RESPOSTAS
-        document.getElementById('btnSubmit').addEventListener('click', async () => {
-            let score = 0;
+        // 2. NAVEGAÇÃO E PAGINAÇÃO
+        window.irParaQuestao = (index) => {
+            currentIndex = index;
             
-            // Compara o que o aluno marcou com o gabarito que veio do banco
+            // Esconde todas, mostra a atual
+            document.querySelectorAll('.question-slide').forEach(slide => slide.classList.add('hidden'));
+            document.getElementById(`slide-${index}`).classList.remove('hidden');
+
+            // Atualiza visual das pílulas
+            document.querySelectorAll('.g-btn-pill').forEach(pill => pill.classList.remove('active'));
+            document.getElementById(`pill-${index}`).classList.add('active');
+
+            // Setas
+            btnPrev.disabled = (index === 0);
+            
+            if (index === questoesSessao.length - 1) {
+                btnNext.classList.add('hidden');
+                btnSubmit.classList.remove('hidden');
+            } else {
+                btnNext.classList.remove('hidden');
+                btnSubmit.classList.add('hidden');
+            }
+        };
+
+        window.marcarPill = (index) => {
+            document.getElementById(`pill-${index}`).classList.add('respondida');
+            
+            // Avança automaticamente após marcar a opção (suave)
+            if(index < questoesSessao.length - 1) {
+                setTimeout(() => { window.irParaQuestao(index + 1); }, 300);
+            }
+        };
+
+        btnNext.addEventListener('click', () => { if (currentIndex < questoesSessao.length - 1) window.irParaQuestao(currentIndex + 1); });
+        btnPrev.addEventListener('click', () => { if (currentIndex > 0) window.irParaQuestao(currentIndex - 1); });
+
+        // 3. ENVIO DE RESPOSTAS
+        btnSubmit.addEventListener('click', async () => {
+            const respondidas = document.querySelectorAll('input[type="radio"]:checked').length;
+            if(respondidas < questoesSessao.length) {
+                const conf = confirm("Faltam questões! Certeza que deseja entregar incompleto?");
+                if(!conf) return;
+            }
+
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ENVIANDO...';
+            btnSubmit.style.pointerEvents = 'none';
+
+            let score = 0;
             for (let i = 1; i <= gabaritoCorreto.length; i++) {
                 const selected = document.querySelector(`input[name="q${i}"]:checked`);
                 if (selected && selected.value === gabaritoCorreto[i-1]) { 
@@ -168,22 +302,17 @@
             }
 
             try {
-                // Atualiza o perfil do aluno no banco com "entregue" e a nota final
                 const studentRef = doc(db, "grammar_activity", studentDocId);
-                await updateDoc(studentRef, {
-                    status: "entregue",
-                    score: score
-                });
+                await updateDoc(studentRef, { status: "entregue", score: score });
                 
-                activitySection.innerHTML = `
-                    <div class='card-box' style='text-align: center; border-top: 5px solid #10b981;'>
-                        <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #10b981; margin-bottom: 15px;"></i>
-                        <h2 class="header-title" style="justify-content: center;">Submitted!</h2>
-                        <p style="color: #64748b; font-weight: 600;">Check the main screen for your results.</p>
-                    </div>`;
+                activitySection.style.display = 'none';
+                document.getElementById('successSection').classList.remove('hidden');
+
             } catch (e) {
                 console.error("Erro: ", e);
-                alert("Error submitting answers.");
+                alert("Erro ao enviar respostas. Tente novamente.");
+                btnSubmit.innerHTML = 'ENTREGAR <i class="fa-solid fa-paper-plane"></i>';
+                btnSubmit.style.pointerEvents = 'auto';
             }
         });
     </script>
