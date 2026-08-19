@@ -39,13 +39,14 @@
         .g-btn-pill.active { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transform: scale(1.1); }
         .g-btn-pill.respondida:not(.active) { background: #e0e7ff; color: #4f46e5; border-color: #e0e7ff; }
 
-        #render-pergunta { flex-grow: 1; overflow-y: auto; padding: 30px 20px 20px 20px; display: flex; flex-direction: column; }
+        /* Ajustes de Padding para puxar os botões de navegação para cima */
+        #render-pergunta { flex-grow: 1; overflow-y: auto; padding: 25px 20px 5px 20px; display: flex; flex-direction: column; }
         
-        .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; }
+        .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; }
         .box-enunciado-render::before { content: ''; position: absolute; left: 20px; top: -10px; font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f10d"; color: #8b5cf6; font-size: 24px; background: #fff; padding: 0 5px; opacity: 0.2; }
         .texto-enunciado-render { color: #0f172a; font-size: 18px; font-weight: 800; line-height: 1.5; text-align: center; }
 
-        .opcoes-lista { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;}
+        .opcoes-lista { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px;}
         .opcao-card { display: flex; align-items: center; padding: 16px 20px; background: #fff; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
         .opcao-card input { display: none; }
         
@@ -56,7 +57,8 @@
         .opcao-card:has(input:checked) .letra-indicador { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: transparent; }
         .opcao-card:has(input:checked) .texto-opcao { color: #6d28d9; }
 
-        .container-navegacao-setas { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px 25px 20px; background: #f8fafc; }
+        /* Navegação puxada para cima */
+        .container-navegacao-setas { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px 30px 20px; background: #f8fafc; margin-top: -10px; }
         .btn-seta-nav { background: #fff; border: 2px solid #e2e8f0; width: 55px; height: 55px; border-radius: 50%; color: #8b5cf6; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.2s; }
         .btn-seta-nav:hover:not(:disabled) { background: #f5f3ff; border-color: #d8b4fe; transform: scale(1.05); }
         .btn-seta-nav:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -82,7 +84,7 @@
     <!-- MODAL DE CONFIRMAÇÃO (ENTREGA INCOMPLETA) -->
     <div id="custom-confirm-modal" class="modal-overlay">
         <div class="modal-content">
-            <div style="margin-bottom: 15px;"><i class="fa-solid fa-paper-plane" style="color: #8b5cf6; font-size: 45px;"></i></div>
+            <div style="margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation" style="color: #8b5cf6; font-size: 45px;"></i></div>
             <h3 id="confirm-title" style="color: #0f172a; margin-top: 0; font-weight: 800; font-size: 20px;">Aviso</h3>
             <p id="confirm-msg" style="color: #64748b; font-size: 15px; line-height: 1.5; margin-bottom: 25px;"></p>
             <div style="display:flex; flex-direction: column; gap:10px;">
@@ -123,7 +125,7 @@
         <div class="container-navegacao-setas">
             <button id="btnPrev" class="btn-seta-nav"><i class="fa-solid fa-chevron-left"></i></button>
             <button id="btnSubmit" class="btn-gradient hidden" style="flex: 1; margin: 0 15px; border-radius: 30px; height: 55px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);">
-                ENTREGAR <i class="fa-solid fa-paper-plane"></i>
+                ENTREGAR
             </button>
             <button id="btnNext" class="btn-seta-nav"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
@@ -361,7 +363,7 @@
             } catch (e) {
                 console.error("Erro: ", e);
                 mostrarAlertaCustomizado("Falha no Envio", "Erro ao enviar respostas. Verifique sua internet.", "error");
-                btnSubmit.innerHTML = 'ENTREGAR <i class="fa-solid fa-paper-plane"></i>';
+                btnSubmit.innerHTML = 'ENTREGAR';
                 btnSubmit.style.pointerEvents = 'auto';
             }
         }
