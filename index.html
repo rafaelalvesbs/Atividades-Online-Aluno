@@ -16,10 +16,11 @@
         .card-box { background: white; padding: 35px 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; width: 100%; max-width: 400px; text-align: center; }
         .header-title { color: #0f172a; font-weight: 800; font-size: 24px; margin: 0 0 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; letter-spacing: -0.5px; }
         
-        .input-modern { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; background: #fff; margin-bottom: 25px; font-family: inherit; font-weight: 800; color: #0f172a; box-sizing: border-box; text-transform: uppercase; outline: none; transition: all 0.3s; text-align: center; }
+        .input-modern { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; background: #fff; margin-bottom: 20px; font-family: inherit; font-weight: 800; color: #0f172a; box-sizing: border-box; text-transform: uppercase; outline: none; transition: all 0.3s; text-align: center; }
         .input-modern:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+        .input-modern:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-color: #e2e8f0; }
         
-        .btn-gradient { width: 100%; padding: 18px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; }
+        .btn-gradient { width: 100%; padding: 18px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; margin-top: 10px; }
         .btn-gradient:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); }
         .btn-gradient:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -39,7 +40,6 @@
         .g-btn-pill.active { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transform: scale(1.1); }
         .g-btn-pill.respondida:not(.active) { background: #e0e7ff; color: #4f46e5; border-color: #e0e7ff; }
 
-        /* Ajustes de Padding para puxar os botões de navegação para cima */
         #render-pergunta { flex-grow: 1; overflow-y: auto; padding: 25px 20px 5px 20px; display: flex; flex-direction: column; }
         
         .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; }
@@ -57,7 +57,6 @@
         .opcao-card:has(input:checked) .letra-indicador { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: transparent; }
         .opcao-card:has(input:checked) .texto-opcao { color: #6d28d9; }
 
-        /* Navegação puxada para cima */
         .container-navegacao-setas { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px 30px 20px; background: #f8fafc; margin-top: -10px; }
         .btn-seta-nav { background: #fff; border: 2px solid #e2e8f0; width: 55px; height: 55px; border-radius: 50%; color: #8b5cf6; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.2s; }
         .btn-seta-nav:hover:not(:disabled) { background: #f5f3ff; border-color: #d8b4fe; transform: scale(1.05); }
@@ -94,15 +93,18 @@
         </div>
     </div>
 
-    <!-- TELA DE LOGIN (Trava) -->
+    <!-- TELA DE LOGIN -->
     <div id="loginSection" class="login-wrapper">
         <div class="card-box" style="border-top: 6px solid #8b5cf6;">
             <div style="width: 80px; height: 80px; background: #f5f3ff; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                 <i class="fa-solid fa-user-astronaut" style="font-size: 35px; color: #8b5cf6;"></i>
             </div>
             <h2 class="header-title">Identificação</h2>
-            <p style="color: #64748b; font-size: 15px; font-weight: 600; margin-bottom: 30px; line-height: 1.5;">Digite seu nome completo para iniciar a atividade ao vivo</p>
-            <input type="text" id="studentName" class="input-modern" autocomplete="off" placeholder="SEU NOME AQUI">
+            <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 25px; line-height: 1.5;">Digite seu nome e o ID da sala para iniciar</p>
+            
+            <input type="text" id="roomIdInput" class="input-modern" autocomplete="off" placeholder="ID DA SALA">
+            <input type="text" id="studentName" class="input-modern" autocomplete="off" placeholder="SEU NOME">
+            
             <button id="btnEnter" class="btn-gradient">ENTRAR NA SALA <i class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
@@ -188,21 +190,16 @@
             };
         };
 
-        // LÓGICA DE SESSÃO PELA URL (Trava de Segurança)
+        // LÓGICA DO ID DA SALA (Via QR Code ou Manual)
         const urlParams = new URLSearchParams(window.location.search);
-        const sessaoId = urlParams.get('id');
+        let sessaoId = urlParams.get('id');
 
-        if (!sessaoId) {
-            document.getElementById('loginSection').innerHTML = `
-                <div class="card-box" style="border-top: 6px solid #ef4444; margin: auto;">
-                    <div style="width: 80px; height: 80px; background: #fef2f2; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                        <i class="fa-solid fa-lock" style="font-size: 35px; color: #ef4444;"></i>
-                    </div>
-                    <h2 class="header-title">Acesso Negado</h2>
-                    <p style="font-weight: 600; font-size: 15px; color: #64748b; line-height: 1.5;">Você precisa escanear o QR Code no telão do professor para entrar na sala correta.</p>
-                </div>
-            `;
-            throw new Error("Sessão não informada na URL.");
+        const roomIdInput = document.getElementById('roomIdInput');
+        
+        // Se o aluno leu o QR Code, o ID vem na URL. Nós preenchemos o campo e bloqueamos para facilitar.
+        if (sessaoId) {
+            roomIdInput.value = sessaoId;
+            roomIdInput.disabled = true;
         }
 
         let studentDocId = "";
@@ -223,10 +220,20 @@
         nameInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
         });
+        roomIdInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.trim(); // Evita espaços no ID da sala
+        });
 
         // ENTRAR NA SESSÃO
         document.getElementById('btnEnter').addEventListener('click', async () => {
             const name = nameInput.value.trim();
+            sessaoId = roomIdInput.value.trim();
+
+            if (!sessaoId) {
+                mostrarAlertaCustomizado("ID da Sala", "Por favor, digite o ID da sala para entrar na atividade.", "error");
+                return;
+            }
+
             if (name.length < 2) {
                 mostrarAlertaCustomizado("Nome Inválido", "Por favor, digite um nome com pelo menos 2 letras para continuar.", "error");
                 return;
@@ -241,7 +248,7 @@
                 const sessaoSnap = await getDoc(sessaoRef);
 
                 if (!sessaoSnap.exists()) {
-                    mostrarAlertaCustomizado("Sessão Encerrada", "A atividade não existe ou foi encerrada pelo professor.", "error");
+                    mostrarAlertaCustomizado("Sessão Encerrada", "O ID informado não existe ou a atividade já foi encerrada pelo professor.", "error");
                     btn.innerHTML = 'ENTRAR NA SALA <i class="fa-solid fa-arrow-right"></i>';
                     btn.style.pointerEvents = 'auto';
                     return;
