@@ -24,6 +24,7 @@
         .btn-gradient:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); }
         .btn-gradient:disabled { opacity: 0.6; cursor: not-allowed; }
 
+        /* Modais Customizados do Aluno */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); padding: 20px; }
         .modal-content { background: #fff; width: 100%; max-width: 400px; border-radius: 24px; padding: 35px 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; }
 
@@ -78,7 +79,7 @@
             <div id="alert-icon" style="margin-bottom: 15px;"></div>
             <h3 id="alert-title" style="color: #0f172a; margin-top: 0; font-weight: 800; font-size: 20px;">Aviso</h3>
             <p id="alert-msg" style="color: #64748b; font-size: 15px; line-height: 1.5; margin-bottom: 25px;"></p>
-            <button class="btn-gradient" onclick="fecharAlertaCustomizado()" style="padding: 14px;">ENTENDI</button>
+            <button class="btn-gradient" onclick="fecharAlertaCustomizado()">ENTENDI</button>
         </div>
     </div>
 
@@ -89,8 +90,8 @@
             <h3 id="confirm-title" style="color: #0f172a; margin-top: 0; font-weight: 800; font-size: 20px;">Aviso</h3>
             <p id="confirm-msg" style="color: #64748b; font-size: 15px; line-height: 1.5; margin-bottom: 25px;"></p>
             <div style="display:flex; flex-direction: column; gap:10px;">
-                <button id="btn-confirm-yes" class="btn-gradient" style="padding: 14px;">SIM, ENTREGAR AGORA</button>
-                <button id="btn-confirm-no" style="background: transparent; color: #64748b; border: 2px solid #e2e8f0; border-radius: 16px; padding: 14px; font-size: 14px; font-weight: 800; cursor: pointer;">VOLTAR E REVISAR</button>
+                <button id="btn-confirm-yes" class="btn-gradient">SIM, ENTREGAR AGORA</button>
+                <button id="btn-confirm-no" style="background: transparent; color: #64748b; border: 2px solid #e2e8f0; border-radius: 16px; padding: 16px; font-size: 14px; font-weight: 800; cursor: pointer;">VOLTAR E REVISAR</button>
             </div>
         </div>
     </div>
@@ -102,7 +103,7 @@
                 <i class="fa-solid fa-user-astronaut" style="font-size: 35px; color: #8b5cf6;"></i>
             </div>
             <h2 class="header-title">Identificação</h2>
-            <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 25px; line-height: 1.5;">Digite o ID da sala com 4 números e seu nome.</p>
+            <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 25px; line-height: 1.5;">Digite o ID da sala de 4 números e seu nome.</p>
             
             <input type="text" id="roomIdInput" class="input-modern" autocomplete="off" placeholder="ID DA SALA" maxlength="4" style="letter-spacing: 3px;">
             <input type="text" id="studentName" class="input-modern" autocomplete="off" placeholder="SEU NOME COMPLETO">
@@ -167,7 +168,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // FUNÇÕES ALERTA
+        // FUNÇÕES DE ALERTAS MODERNOS
         window.mostrarAlertaCustomizado = function(titulo, mensagem, tipo = 'error') {
             document.getElementById('alert-title').innerText = titulo;
             document.getElementById('alert-msg').innerText = mensagem;
@@ -209,7 +210,6 @@
         let gabaritoCorreto = [];
         let currentIndex = 0;
         
-        // VARIÁVEIS DO CRONÔMETRO
         let timeInicio = null;
         let cronometroInterval = null;
         let totalTempoMs = 0;
@@ -224,20 +224,16 @@
         const btnNext = document.getElementById('btnNext');
         const btnSubmit = document.getElementById('btnSubmit');
 
-        nameInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
-        });
-        roomIdInput.addEventListener('input', (e) => { 
-            e.target.value = e.target.value.trim().replace(/[^0-9]/g, ''); // Força apenas números
-        });
+        nameInput.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase(); });
+        roomIdInput.addEventListener('input', (e) => { e.target.value = e.target.value.trim().replace(/[^0-9]/g, ''); });
 
         // INICIAR
         document.getElementById('btnEnter').addEventListener('click', async () => {
             const name = nameInput.value.trim();
             sessaoId = roomIdInput.value.trim();
 
-            if (!sessaoId || sessaoId.length < 4) { mostrarAlertaCustomizado("ID da Sala", "Por favor, digite os 4 números do ID da sala para entrar.", "error"); return; }
-            if (name.length < 2) { mostrarAlertaCustomizado("Nome Inválido", "Por favor, digite um nome válido com pelo menos 2 letras.", "error"); return; }
+            if (!sessaoId || sessaoId.length < 4) { window.mostrarAlertaCustomizado("ID da Sala", "Por favor, digite os 4 números do ID da sala.", "error"); return; }
+            if (name.length < 2) { window.mostrarAlertaCustomizado("Nome Inválido", "Por favor, digite um nome válido com pelo menos 2 letras.", "error"); return; }
             
             const btn = document.getElementById('btnEnter');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CARREGANDO...';
@@ -248,7 +244,7 @@
                 const sessaoSnap = await getDoc(sessaoRef);
 
                 if (!sessaoSnap.exists()) {
-                    mostrarAlertaCustomizado("Sessão Encerrada", "O ID não existe ou a atividade foi encerrada pelo professor.", "error");
+                    window.mostrarAlertaCustomizado("Sessão Encerrada", "O ID não existe ou a atividade foi encerrada pelo professor.", "error");
                     btn.innerHTML = 'ENTRAR NA SALA';
                     btn.style.pointerEvents = 'auto';
                     return;
@@ -294,13 +290,12 @@
                 
                 window.irParaQuestao(0);
                 
-                // DISPARA O RELÓGIO
                 timeInicio = Date.now();
                 cronometroInterval = setInterval(atualizarRelogio, 1000);
 
             } catch (e) {
                 console.error("Erro: ", e);
-                mostrarAlertaCustomizado("Erro", "Não foi possível carregar a atividade. Verifique a internet.", "error");
+                window.mostrarAlertaCustomizado("Erro", "Não foi possível carregar a atividade. Verifique a internet.", "error");
                 btn.innerHTML = 'ENTRAR NA SALA';
                 btn.style.pointerEvents = 'auto';
             }
@@ -347,7 +342,7 @@
         btnSubmit.addEventListener('click', async () => {
             const respondidas = document.querySelectorAll('input[type="radio"]:checked').length;
             if(respondidas < questoesSessao.length) {
-                mostrarConfirmacaoCustomizada(
+                window.mostrarConfirmacaoCustomizada(
                     "Faltam Questões!", 
                     `Você respondeu apenas ${respondidas} das ${questoesSessao.length}. Tem certeza que deseja entregar incompleto?`, 
                     processarEnvio
@@ -361,7 +356,6 @@
             btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ENVIANDO...';
             btnSubmit.style.pointerEvents = 'none';
             
-            // TRAVA O RELÓGIO
             clearInterval(cronometroInterval);
             totalTempoMs = Date.now() - timeInicio;
 
@@ -379,7 +373,6 @@
                     timeSpent: totalTempoMs
                 });
                 
-                // Exibe no visor de Sucesso o tempo final
                 const minsFinais = String(Math.floor(totalTempoMs / 60000)).padStart(2, '0');
                 const segsFinais = String(Math.floor((totalTempoMs % 60000)/1000)).padStart(2, '0');
                 document.getElementById('finalTimeDisplay').innerText = `${minsFinais}:${segsFinais}`;
@@ -389,11 +382,10 @@
 
             } catch (e) {
                 console.error("Erro: ", e);
-                mostrarAlertaCustomizado("Falha no Envio", "Erro ao enviar respostas. Verifique sua internet.", "error");
+                window.mostrarAlertaCustomizado("Falha no Envio", "Erro ao enviar respostas. Verifique sua internet.", "error");
                 btnSubmit.innerHTML = 'ENTREGAR ATIVIDADE';
                 btnSubmit.style.pointerEvents = 'auto';
                 
-                // Se der erro, religa o relógio da onde parou para ser justo
                 timeInicio = Date.now() - totalTempoMs;
                 cronometroInterval = setInterval(atualizarRelogio, 1000);
             }
