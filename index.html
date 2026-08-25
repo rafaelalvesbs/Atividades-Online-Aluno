@@ -16,7 +16,7 @@
         .card-box { background: white; padding: 35px 25px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; width: 100%; max-width: 400px; text-align: center; }
         .header-title { color: #0f172a; font-weight: 800; font-size: 24px; margin: 0 0 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; letter-spacing: -0.5px; }
         
-        .input-modern { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; background: #fff; margin-bottom: 20px; font-family: inherit; font-weight: 800; color: #0f172a; box-sizing: border-box; text-transform: uppercase; outline: none; transition: all 0.3s; text-align: center; }
+        .input-modern { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; background: #fff; margin-bottom: 20px; font-family: inherit; font-weight: 800; color: #0f172a; box-sizing: border-box; text-transform: uppercase; outline: none; transition: all 0.3s; text-align: center; letter-spacing: 1px; }
         .input-modern:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
         .input-modern:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-color: #e2e8f0; }
         
@@ -24,7 +24,7 @@
         .btn-gradient:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); }
         .btn-gradient:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); padding: 20px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); padding: 20px; }
         .modal-content { background: #fff; width: 100%; max-width: 400px; border-radius: 24px; padding: 35px 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; }
 
         /* TELA DA ATIVIDADE */
@@ -65,7 +65,7 @@
         .success-icon-wrap { width: 100px; height: 100px; background: #f5f3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2); }
         .success-icon-wrap i { font-size: 50px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .timer-display { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+        .timer-display { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 1px;}
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
@@ -102,10 +102,10 @@
                 <i class="fa-solid fa-user-astronaut" style="font-size: 35px; color: #8b5cf6;"></i>
             </div>
             <h2 class="header-title">Identificação</h2>
-            <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 25px; line-height: 1.5;">Digite seu nome e o ID da sala para iniciar</p>
+            <p style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 25px; line-height: 1.5;">Digite o ID da sala com 4 números e seu nome.</p>
             
-            <input type="text" id="roomIdInput" class="input-modern" autocomplete="off" placeholder="ID DA SALA">
-            <input type="text" id="studentName" class="input-modern" autocomplete="off" placeholder="SEU NOME">
+            <input type="text" id="roomIdInput" class="input-modern" autocomplete="off" placeholder="ID DA SALA" maxlength="4" style="letter-spacing: 3px;">
+            <input type="text" id="studentName" class="input-modern" autocomplete="off" placeholder="SEU NOME COMPLETO">
             
             <button id="btnEnter" class="btn-gradient">ENTRAR NA SALA</button>
         </div>
@@ -145,10 +145,10 @@
         </div>
         <h2 style="color: #0f172a; font-weight: 800; font-size: 28px; margin: 0 0 10px 0;">Concluído!</h2>
         <p style="color: #64748b; font-weight: 600; font-size: 16px; margin-bottom: 20px;">Respostas enviadas.</p>
-        <p style="color: #8b5cf6; font-weight: 800; font-size: 14px; background: #f3e8ff; padding: 10px 20px; border-radius: 12px; display: inline-block;">
+        <p style="color: #8b5cf6; font-weight: 800; font-size: 16px; background: #f3e8ff; padding: 12px 25px; border-radius: 12px; display: inline-block; letter-spacing: 1px;">
             <i class="fa-regular fa-clock"></i> Tempo: <span id="finalTimeDisplay"></span>
         </p>
-        <p style="color: #64748b; font-size: 14px; margin-top: 20px; font-weight: 600;">Olhe para o telão para conferir a sua pontuação no ranking.</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: 25px; font-weight: 600;">Olhe para o telão para conferir a sua pontuação e classificação.</p>
     </div>
 
     <script type="module">
@@ -227,15 +227,17 @@
         nameInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase();
         });
-        roomIdInput.addEventListener('input', (e) => { e.target.value = e.target.value.trim(); });
+        roomIdInput.addEventListener('input', (e) => { 
+            e.target.value = e.target.value.trim().replace(/[^0-9]/g, ''); // Força apenas números
+        });
 
         // INICIAR
         document.getElementById('btnEnter').addEventListener('click', async () => {
             const name = nameInput.value.trim();
             sessaoId = roomIdInput.value.trim();
 
-            if (!sessaoId) { mostrarAlertaCustomizado("ID da Sala", "Por favor, digite o ID da sala para entrar.", "error"); return; }
-            if (name.length < 2) { mostrarAlertaCustomizado("Nome Inválido", "Por favor, digite um nome válido.", "error"); return; }
+            if (!sessaoId || sessaoId.length < 4) { mostrarAlertaCustomizado("ID da Sala", "Por favor, digite os 4 números do ID da sala para entrar.", "error"); return; }
+            if (name.length < 2) { mostrarAlertaCustomizado("Nome Inválido", "Por favor, digite um nome válido com pelo menos 2 letras.", "error"); return; }
             
             const btn = document.getElementById('btnEnter');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CARREGANDO...';
@@ -246,7 +248,7 @@
                 const sessaoSnap = await getDoc(sessaoRef);
 
                 if (!sessaoSnap.exists()) {
-                    mostrarAlertaCustomizado("Sessão Encerrada", "O ID não existe ou a atividade foi encerrada.", "error");
+                    mostrarAlertaCustomizado("Sessão Encerrada", "O ID não existe ou a atividade foi encerrada pelo professor.", "error");
                     btn.innerHTML = 'ENTRAR NA SALA';
                     btn.style.pointerEvents = 'auto';
                     return;
@@ -282,7 +284,7 @@
                     sessaoId: sessaoId,
                     status: "fazendo",
                     score: 0,
-                    timeSpent: Infinity, // Iniciou, não tem tempo final ainda
+                    timeSpent: Infinity, 
                     timestamp: new Date()
                 });
                 studentDocId = docRef.id;
@@ -377,7 +379,7 @@
                     timeSpent: totalTempoMs
                 });
                 
-                // Exibe no visor de Sucesso o tempo e oculta Atividade
+                // Exibe no visor de Sucesso o tempo final
                 const minsFinais = String(Math.floor(totalTempoMs / 60000)).padStart(2, '0');
                 const segsFinais = String(Math.floor((totalTempoMs % 60000)/1000)).padStart(2, '0');
                 document.getElementById('finalTimeDisplay').innerText = `${minsFinais}:${segsFinais}`;
@@ -388,10 +390,10 @@
             } catch (e) {
                 console.error("Erro: ", e);
                 mostrarAlertaCustomizado("Falha no Envio", "Erro ao enviar respostas. Verifique sua internet.", "error");
-                btnSubmit.innerHTML = 'ENTREGAR';
+                btnSubmit.innerHTML = 'ENTREGAR ATIVIDADE';
                 btnSubmit.style.pointerEvents = 'auto';
                 
-                // Se der erro, religa o relógio da onde parou (Opcional, mas seguro)
+                // Se der erro, religa o relógio da onde parou para ser justo
                 timeInicio = Date.now() - totalTempoMs;
                 cronometroInterval = setInterval(atualizarRelogio, 1000);
             }
