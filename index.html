@@ -24,7 +24,6 @@
         .btn-gradient:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); }
         .btn-gradient:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        /* Modais Customizados do Aluno */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); padding: 20px; }
         .modal-content { background: #fff; width: 100%; max-width: 400px; border-radius: 24px; padding: 35px 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; }
 
@@ -40,22 +39,35 @@
         .g-btn-pill.active { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transform: scale(1.1); }
         .g-btn-pill.respondida:not(.active) { background: #e0e7ff; color: #4f46e5; border-color: #e0e7ff; }
 
-        #render-pergunta { flex-grow: 1; overflow-y: auto; padding: 25px 20px 5px 20px; display: flex; flex-direction: column; }
+        /* Estilos do Modo de Revisão (Sem Verde!) */
+        .g-btn-pill.pill-correct { background: #3b82f6 !important; color: #fff !important; border-color: #3b82f6 !important; }
+        .g-btn-pill.pill-wrong { background: #ef4444 !important; color: #fff !important; border-color: #ef4444 !important; }
+
+        #render-pergunta { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 25px 20px 5px 20px; display: flex; flex-direction: column; }
         
-        .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; }
+        .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); position: relative; width: 100%; box-sizing: border-box; }
         .box-enunciado-render::before { content: ''; position: absolute; left: 20px; top: -10px; font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f10d"; color: #8b5cf6; font-size: 24px; background: #fff; padding: 0 5px; opacity: 0.2; }
         .texto-enunciado-render { color: #0f172a; font-size: 18px; font-weight: 800; line-height: 1.5; text-align: center; }
 
         .opcoes-lista { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px;}
-        .opcao-card { display: flex; align-items: center; padding: 16px 20px; background: #fff; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; }
+        .opcao-card { display: flex; align-items: center; padding: 16px 20px; background: #fff; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; width: 100%; box-sizing: border-box; }
         .opcao-card input { display: none; }
         
         .letra-indicador { font-weight: 800; background: #f1f5f9; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 13px; color: #64748b; border: 1px solid #e2e8f0; flex-shrink: 0; transition: 0.3s; }
         .texto-opcao { font-weight: 700; color: #1e293b; font-size: 15px; }
 
-        .opcao-card:has(input:checked) { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15); transform: translateY(-2px); }
-        .opcao-card:has(input:checked) .letra-indicador { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: transparent; }
-        .opcao-card:has(input:checked) .texto-opcao { color: #6d28d9; }
+        .opcao-card:has(input:checked):not(.disabled-opt) { border-color: #8b5cf6; background: #f5f3ff; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15); transform: translateY(-2px); }
+        .opcao-card:has(input:checked):not(.disabled-opt) .letra-indicador { background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; border-color: transparent; }
+        .opcao-card:has(input:checked):not(.disabled-opt) .texto-opcao { color: #6d28d9; }
+
+        /* Estilos do Modo de Revisão para Alternativas */
+        .opcao-correct { border-color: #3b82f6 !important; background: #eff6ff !important; }
+        .opcao-correct .letra-indicador { background: #3b82f6 !important; color: #fff !important; border-color: transparent !important; }
+        .opcao-correct .texto-opcao { color: #1e40af !important; }
+        
+        .opcao-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; }
+        .opcao-wrong .letra-indicador { background: #ef4444 !important; color: #fff !important; border-color: transparent !important; }
+        .opcao-wrong .texto-opcao { color: #991b1b !important; }
 
         .container-navegacao-setas { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px 30px 20px; background: #f8fafc; margin-top: -10px; }
         .btn-seta-nav { background: #fff; border: 2px solid #e2e8f0; width: 55px; height: 55px; border-radius: 50%; color: #8b5cf6; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.2s; }
@@ -116,6 +128,7 @@
     <div id="view-resolver">
         <div class="header-resolver-top">
             <div class="header-info">
+                <button id="btnSairRevisao" class="hidden" style="background: rgba(255,255,255,0.2); border: none; color: #fff; border-radius: 10px; width: 35px; height: 35px; cursor: pointer; margin-right: 15px;"><i class="fa-solid fa-xmark"></i></button>
                 <div class="header-resolver-titulo" id="atividadeTitulo">Carregando...</div>
                 <div style="display: flex; gap: 8px;">
                     <div class="timer-display"><i class="fa-regular fa-clock"></i> <span id="timerDisplay">00:00</span></div>
@@ -149,7 +162,9 @@
         <p style="color: #8b5cf6; font-weight: 800; font-size: 16px; background: #f3e8ff; padding: 12px 25px; border-radius: 12px; display: inline-block; letter-spacing: 1px;">
             <i class="fa-regular fa-clock"></i> Tempo: <span id="finalTimeDisplay"></span>
         </p>
-        <p style="color: #64748b; font-size: 14px; margin-top: 25px; font-weight: 600;">Olhe para o telão para conferir a sua pontuação e classificação.</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: 15px; margin-bottom: 25px; font-weight: 600;">Olhe para o telão para conferir a sua pontuação e classificação.</p>
+
+        <button id="btnReview" class="btn-gradient" style="max-width: 300px; background: #fff; color: #8b5cf6; border: 2px solid #e2e8f0; box-shadow: none;">REVISAR MINHAS RESPOSTAS</button>
     </div>
 
     <script type="module">
@@ -178,9 +193,7 @@
             document.getElementById('custom-alert-modal').style.display = 'flex';
         };
 
-        window.fecharAlertaCustomizado = function() {
-            document.getElementById('custom-alert-modal').style.display = 'none';
-        };
+        window.fecharAlertaCustomizado = function() { document.getElementById('custom-alert-modal').style.display = 'none'; };
 
         window.mostrarConfirmacaoCustomizada = function(titulo, mensagem, callbackSim) {
             document.getElementById('confirm-title').innerText = titulo;
@@ -209,6 +222,7 @@
         let questoesSessao = [];
         let gabaritoCorreto = [];
         let currentIndex = 0;
+        let isReviewMode = false;
         
         let timeInicio = null;
         let cronometroInterval = null;
@@ -223,6 +237,7 @@
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
         const btnSubmit = document.getElementById('btnSubmit');
+        const btnSairRevisao = document.getElementById('btnSairRevisao');
 
         nameInput.addEventListener('input', (e) => { e.target.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '').toUpperCase(); });
         roomIdInput.addEventListener('input', (e) => { e.target.value = e.target.value.trim().replace(/[^0-9]/g, ''); });
@@ -315,13 +330,16 @@
             document.querySelectorAll('.question-slide').forEach(slide => slide.classList.add('hidden'));
             document.getElementById(`slide-${index}`).classList.remove('hidden');
 
-            document.querySelectorAll('.g-btn-pill').forEach(pill => pill.classList.remove('active'));
+            document.querySelectorAll('.g-btn-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
             document.getElementById(`pill-${index}`).classList.add('active');
 
             btnPrev.disabled = (index === 0);
+            
             if (index === questoesSessao.length - 1) {
                 btnNext.classList.add('hidden');
-                btnSubmit.classList.remove('hidden');
+                if (!isReviewMode) btnSubmit.classList.remove('hidden');
             } else {
                 btnNext.classList.remove('hidden');
                 btnSubmit.classList.add('hidden');
@@ -329,6 +347,7 @@
         };
 
         window.marcarPill = (index) => {
+            if (isReviewMode) return;
             document.getElementById(`pill-${index}`).classList.add('respondida');
             if(index < questoesSessao.length - 1) {
                 setTimeout(() => { window.irParaQuestao(index + 1); }, 350);
@@ -338,7 +357,7 @@
         btnNext.addEventListener('click', () => { if (currentIndex < questoesSessao.length - 1) window.irParaQuestao(currentIndex + 1); });
         btnPrev.addEventListener('click', () => { if (currentIndex > 0) window.irParaQuestao(currentIndex - 1); });
 
-        // ENVIO
+        // ENVIO DA ATIVIDADE
         btnSubmit.addEventListener('click', async () => {
             const respondidas = document.querySelectorAll('input[type="radio"]:checked').length;
             if(respondidas < questoesSessao.length) {
@@ -390,6 +409,54 @@
                 cronometroInterval = setInterval(atualizarRelogio, 1000);
             }
         }
+
+        // LÓGICA DE REVISÃO DO ALUNO
+        document.getElementById('btnReview').addEventListener('click', () => {
+            isReviewMode = true;
+            document.getElementById('successSection').classList.add('hidden');
+            activitySection.style.display = 'flex';
+            
+            btnSubmit.style.display = 'none';
+            btnSairRevisao.classList.remove('hidden');
+            document.getElementById('atividadeTitulo').innerText = "Modo de Revisão";
+
+            // Bloquear edição e aplicar cores
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.classList.add('disabled-opt'));
+            document.querySelectorAll('.opcao-card').forEach(card => card.style.pointerEvents = 'none');
+
+            questoesSessao.forEach((item, index) => {
+                const correta = gabaritoCorreto[index];
+                const inputMarcado = document.querySelector(`input[name="q${index+1}"]:checked`);
+                const marcada = inputMarcado ? inputMarcado.value : null;
+
+                const pill = document.getElementById(`pill-${index}`);
+                pill.classList.remove('respondida');
+                
+                if (marcada === correta) {
+                    pill.classList.add('pill-correct');
+                } else {
+                    pill.classList.add('pill-wrong');
+                }
+
+                const slide = document.getElementById(`slide-${index}`);
+                const options = slide.querySelectorAll('.opcao-card');
+                options.forEach(opt => {
+                    const val = opt.querySelector('input').value;
+                    if (val === correta) {
+                        opt.classList.add('opcao-correct');
+                    } else if (val === marcada && val !== correta) {
+                        opt.classList.add('opcao-wrong');
+                    }
+                });
+            });
+
+            window.irParaQuestao(0);
+        });
+
+        btnSairRevisao.addEventListener('click', () => {
+            activitySection.style.display = 'none';
+            document.getElementById('successSection').classList.remove('hidden');
+        });
     </script>
 </body>
 </html>
