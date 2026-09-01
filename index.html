@@ -22,8 +22,8 @@
         .input-modern:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; border-color: #e2e8f0; }
         
         /* Botões Azuis */
-        .btn-gradient { width: 100%; padding: 18px; background: #3b82f6; color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; margin-top: 10px; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
-        .btn-gradient:hover:not(:disabled) { transform: translateY(-3px); background: #2563eb; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); }
+        .btn-gradient { width: 100%; padding: 18px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; margin-top: 10px; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
+        .btn-gradient:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5); }
         .btn-gradient:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(5px); padding: 20px; }
@@ -49,43 +49,41 @@
 
         #render-pergunta { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 25px 20px 20px 20px; display: flex; flex-direction: column; }
         
-        /* Enunciado sem o ícone */
+        /* Enunciado */
         .box-enunciado-render { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; width: 100%; box-sizing: border-box; }
         .texto-enunciado-render { color: #0f172a; font-size: 18px; font-weight: 800; line-height: 1.5; text-align: center; }
 
         .opcoes-lista { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px;}
-        .opcao-card { display: flex; align-items: center; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; width: 100%; box-sizing: border-box; }
+        .opcao-card { display: flex; align-items: center; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: all 0.2s; width: 100%; box-sizing: border-box; background: #fff; }
         .opcao-card input { display: none; }
         
-        .letra-indicador { font-weight: 800; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 13px; flex-shrink: 0; transition: 0.3s; border: 1px solid transparent; }
-        .texto-opcao { font-weight: 700; font-size: 15px; }
+        .letra-indicador { font-weight: 800; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 13px; flex-shrink: 0; transition: 0.3s; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; }
+        .texto-opcao { font-weight: 700; font-size: 15px; color: #334155; }
 
-        /* Cores das Alternativas (A: Amarelo, B: Vermelho, C: Verde) */
-        .card-opt-A { background: #fef9c3; border-color: #fde047; }
-        .card-opt-A .letra-indicador { background: #fde047; color: #854d0e; border-color: #facc15; }
-        .card-opt-A .texto-opcao { color: #854d0e; }
-        .card-opt-A:has(input:checked):not(.disabled-opt) { border-color: #eab308; background: #fef08a; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .card-opt-A:has(input:checked):not(.disabled-opt) .letra-indicador { background: #eab308; color: #fff; border-color: #ca8a04; }
-
-        .card-opt-B { background: #fef2f2; border-color: #fca5a5; }
-        .card-opt-B .letra-indicador { background: #fecaca; color: #991b1b; border-color: #f87171; }
-        .card-opt-B .texto-opcao { color: #991b1b; }
-        .card-opt-B:has(input:checked):not(.disabled-opt) { border-color: #ef4444; background: #fee2e2; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .card-opt-B:has(input:checked):not(.disabled-opt) .letra-indicador { background: #ef4444; color: #fff; border-color: #dc2626; }
-
-        .card-opt-C { background: #f0fdf4; border-color: #86efac; }
-        .card-opt-C .letra-indicador { background: #bbf7d0; color: #166534; border-color: #4ade80; }
-        .card-opt-C .texto-opcao { color: #166534; }
-        .card-opt-C:has(input:checked):not(.disabled-opt) { border-color: #22c55e; background: #dcfce7; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .card-opt-C:has(input:checked):not(.disabled-opt) .letra-indicador { background: #22c55e; color: #fff; border-color: #16a34a; }
+        /* Degradê Azul quando a alternativa é selecionada */
+        .opcao-card:has(input:checked):not(.disabled-opt) { 
+            border-color: #3b82f6; 
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2); 
+        }
+        .opcao-card:has(input:checked):not(.disabled-opt) .letra-indicador { 
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+            color: #fff; 
+            border-color: transparent; 
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        .opcao-card:has(input:checked):not(.disabled-opt) .texto-opcao { 
+            color: #1e40af; 
+        }
 
         /* Estilos do Modo de Revisão para Alternativas */
-        .opcao-correct { border-color: #3b82f6 !important; background: #eff6ff !important; }
-        .opcao-correct .letra-indicador { background: #3b82f6 !important; color: #fff !important; border-color: transparent !important; }
+        .opcao-correct { border-color: #3b82f6 !important; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important; }
+        .opcao-correct .letra-indicador { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; color: #fff !important; border-color: transparent !important; }
         .opcao-correct .texto-opcao { color: #1e40af !important; }
         
-        .opcao-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; }
-        .opcao-wrong .letra-indicador { background: #ef4444 !important; color: #fff !important; border-color: transparent !important; }
+        .opcao-wrong { border-color: #ef4444 !important; background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%) !important; }
+        .opcao-wrong .letra-indicador { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; color: #fff !important; border-color: transparent !important; }
         .opcao-wrong .texto-opcao { color: #991b1b !important; }
 
         /* Setas de navegação internas ao card */
@@ -95,11 +93,9 @@
         .btn-seta-nav:disabled { opacity: 0.3; cursor: not-allowed; }
 
         .success-icon-wrap { width: 100px; height: 100px; background: #f5f3ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px auto; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2); }
-        .success-icon-wrap i { font-size: 50px; background: #3b82f6; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .success-icon-wrap i { font-size: 50px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .timer-display { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 1px;}
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -151,7 +147,6 @@
                 <div class="header-resolver-titulo" id="atividadeTitulo">Carregando...</div>
                 <div style="display: flex; gap: 8px;">
                     <div class="timer-display"><i class="fa-regular fa-clock"></i> <span id="timerDisplay">00:00</span></div>
-                    <div style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; display:flex; align-items:center;">LIVE <i class="fa-solid fa-circle" style="font-size: 8px; color: #f87171; margin-left: 5px; animation: pulse 1.5s infinite;"></i></div>
                 </div>
             </div>
         </div>
@@ -304,9 +299,9 @@
                         <div class="question-slide hidden" id="slide-${index}">
                             <div class="box-enunciado-render"><div class="texto-enunciado-render">${item.q}</div></div>
                             <div class="opcoes-lista">
-                                <label class="opcao-card card-opt-A"><input type="radio" name="q${i}" value="A" onchange="window.marcarPill(${index})" autocomplete="off"><div class="letra-indicador">A</div><div class="texto-opcao">${item.opts.A}</div></label>
-                                <label class="opcao-card card-opt-B"><input type="radio" name="q${i}" value="B" onchange="window.marcarPill(${index})" autocomplete="off"><div class="letra-indicador">B</div><div class="texto-opcao">${item.opts.B}</div></label>
-                                <label class="opcao-card card-opt-C"><input type="radio" name="q${i}" value="C" onchange="window.marcarPill(${index})" autocomplete="off"><div class="letra-indicador">C</div><div class="texto-opcao">${item.opts.C}</div></label>
+                                <label class="opcao-card"><input type="radio" name="q${i}" value="A" onchange="window.marcarPill(${index})" autocomplete="off"><div class="letra-indicador">A</div><div class="texto-opcao">${item.opts.A}</div></label>
+                                <label class="opcao-card"><input type="radio" name="q${i}" value="B" onchange="window.marcarPill(${index})" autocomplete="off"><div class="letra-indicador">B</div><div class="texto-opcao">${item.opts.B}</div></label>
+                                <label class="opcao-card"><input type="radio" name="q${i}" value="C" onchange="window.marcarPill(${index})" autocomplete="off"><div class="letra-indicador">C</div><div class="texto-opcao">${item.opts.C}</div></label>
                             </div>
                         </div>
                     `;
